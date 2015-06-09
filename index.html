@@ -1,0 +1,428 @@
+<!DOCTYPE htlm>
+<html>
+	<head>
+		<title>Limiting factors of cellular growth in fission yeast</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href = "css/bootstrap.min.css" rel="stylesheet">
+		<link href = "css/styles.css" rel="stylesheet">
+		<link href="style.css" rel="stylesheet" type="text/css">
+		<link href="css/lavish-bootstrap.css" rel="stylesheet" type="text/css">
+		<!--<script type="text/javascript" src="javascript/bootstrap.min.js"></script>
+		<script scr="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="js/bootstrap.js"></script>-->
+	</head>
+	<body>
+		<!-- navigation bar at the top of the page -->
+		<div class = "navbar navbar-inverse navbar-fixed-top"> <!--or inverse instead of default to get a black navbar; static instead of fix to make the bar go when you scroll -->
+			<div class = "container">
+				<div class = ".navbar-header">
+					<a href="#abstract" class="navbar-brand">Analysis of gene expression patterns to identify growth-limiting factors in fission yeast</a> <!-- Limiting factors of cellular growth in fission yeast -->
+					<button class="navbar-toggle" data-toggle="collapse" data-target = ".navHeaderCollapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- box with all the content-->
+		<div class="container">
+			<div class="row">
+			<!-- left side menu -->
+				<div class="col-lg-3" id="leftNavColumn">
+					<ul class="nav nav-stacked" id="sidebar">
+						<li class="active"><a href="#">Abstract</a></li>
+						<li><a href="#laySummary">Lay Summary</a></li>
+						<li><a href="#intro">Introduction</a></li>
+						<li><a href="#data">Data</a></li>
+						<li><a href="#assumptions">Assumptions</a></li>
+						<li><a href="#methods">Methods</a></li>
+						<li><a href="#results">Results</a></li>
+						<li><a href="#discussion">Discussion</a></li>
+						<li><a href="#conclusion">Conclusion</a></li>
+						<li><a href="#refs">References</a></li>
+					</ul>
+				</div>
+
+				<!-- content block on the right-->
+				<div class="col-lg-9">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="page-header">
+								<h3 id="abstract">Abstract</h3>
+								<p>Cellular growth regulation, dynamics and limits relate to cellular mechanisms which are still not clearly understood. In this study, analysis of differential expression patterns and kinetics of gene clusters in <i>Schizosaccharomyces pombe</i> are used to dissect complex dynamic biological processes of gene expression regulation to reveal potential limiting factors of growth. For this purpose, we collected proteomics, transcriptomics and length data hourly from growing cell cycle mutant yeast cells, which grow in size but do not divide or replicate their genome. Clustering of time series RNA-seq and mass spectrometry data uncovers expression profiles of functionally similar gene groups. Gene Ontology Term Enrichment (GOTE) of clustered genes and building of co-expression networks gives a systems level overview of rewiring of expression to growth. Results show that while cell size becomes constant after nine hours of growth, overall transcript and protein expression for most genes scales with size, except for stress-related genes, which show significantly increased expression. Another important exception are translation- and transcription-related genes, which are down-regulated. In particular, ribosomal protein transcript expression shows a 2.85-fold decrease, potentially contributing to the slowing of growth and final size regulation. We show here a pipeline for differential time series transcriptome and proteome analysis to analyse growth patterns that uncover cellular dynamics and potentially identify limiting factors of cellular growth in new datasets.</p>
+
+								<h3 id="laySummary">Lay Summary</h3>
+								<p>Cells are complex systems that regulate gene expression, growth and cell size. The question of whether cell size is actively regulated or a passive by-product of molecular processes is still debated. To help identify trends underlying size regulatory processes, proteomic, transcriptomic, and cell length data were collected in a time series hourly for eleven hours taking random samples from mutant <i>S. pombe</i> strains which can grow but cannot replicate their genome nor divide.
+
+Clustering expression data reveals gene groups with similar trends and helps delineate behaviour of functional gene groups. We construct expression networks to analyse systems level interactions and visualise change in expression of gene groups over time.
+
+While cell growth decreases gradually until cell size becomes constant after nine hours of cell-cycle arrest, overall expression of most genes including metabolic, transportation and membrane genes increases with cell size. Expression of ribosomal protein RNA and RNA translation decreases, while expression of augmented cellular stress genes increases. This implies that ribosomal protein genes could contribute to factors that limit further growth.
+In summary, we developed a pipeline to analyse the transcriptome and proteome in a time series to uncover limiting factors for cellular growth, and identified ribosomal genes as potential candidates.
+</p>
+								<h3 id="intro">Introduction</h3>
+								<p>Cell size is limited by its DNA to protein ratio [<a href="#ref1">1</a>]. Within cells, expression of RNA and proteins scale in direct proportion to the size of an organism [<a href="#ref2">2</a>,<a href="#ref3">3</a>]. This size is determined by various unknown cellular control mechanisms [<a href="#ref1">1</a>,<a href="#ref4">4</a>] though several have been proposed: upregulation of an inhibitor which acts on a molecule with a crucial function, direct decrease in expression of the transcription machinery [<a href="#ref1">1</a>], overcrowding due to insufficient diffusion and transport [<a href="#ref5">5</a>], homeostatic imbalance [<a href="#ref6">6</a>,<a href="#ref7">7</a>], or gene-copy-number limitation [<a href="#ref1">1</a>].</p>
+								<p>Fission yeast (<i>Schizosaccharomyces pombe</i>) is a haploid, unicellular eukaryote and serves as a well-characterised, genetically tractable model system in molecular biology [<a href="#ref8">8</a>,<a href="#ref9">9</a>]. Cell cycle arrest can be induced in two conditional mutants, a temperature-sensitive (<i>cdc2-33</i>) [<a href="#ref10">10</a>] and an analogue-sensitive, genetically modified strain (<i>cdc2as</i>) [<a href="#ref11">11</a>,<a href="#ref12">12</a>]. In the former, the cell cycle is interrupted via heat induction and in the latter through chemical inhibition of a kinase [<a href="#ref13">13</a>]. As a result, cells from both strains arrest in the G<sub>2</sub>-phase of the cell cycle, which is characterised by rapid growth, and grow without dividing or replicating their genome [<a href="#ref14">14</a>], see Movie <a href="#movie1">1</a>. This setup enables us to study an increase in size outside the cell cycle until the cells reach their maximum DNA-to-protein ratio.</p>
+								<p>Thus, using a combination of genetic mutants and high-dimensional transcriptomic and proteomic data, this study aims to shed light on mechanisms regulating global gene expression and possible growth-limiting factors in fission yeast.</p>
+
+
+
+								<div class="boxAroundPics">
+									<img id="movie1" class="centeringPic" src="images/Growth.gif" alt="Cell growth">
+									<p>Movie 1: <i>cdc2as</i> cell growth over 11 hours.</p>
+								</div>
+								<h3 id="data">Data</h3>
+								<p>Three different datasets were acquired previously at hourly intervals for eleven hours for similar concentrations of arrested cells: RNA-seq, proteomic and cell length data.
+								Transcript counts were acquired via RNA-seq [<a href="#ref15">15</a>,<a href="#ref16">16</a>,<a href="#ref17">17</a>], using an Illumina HiSeq 2500. Reads were aligned and mapped using exonerate [<a href="#ref18">18</a>] and counted using in-house software.
+								Proteomics data was acquired via mass spectrometry using a Q Exactive<sup>TM</sup> Hybrid Quadrupole-Orbitrap Mass Spectrometer which was normalised and quantified using Progenesis QI [<a href="#ref19">19</a>,<a href="#ref20">20</a>].
+								Cell lengths were calculated from images captured using the Amnis ImageStream<sup>X</sup>&reg;. Cell length rather than area was used as phenotypic characterization, as the rod-shaped S. pombe only grows at its ends [<a href="#ref21">21</a>] and is thus deemed to be a reliable measurement.
+								</p>
+								<p>In addition, normalisation of the transcriptome is performed to account for differences in gene length and library sizes between time points and to achieve homoscedasticity, i.e. to remove the dependence of the variance on the mean [<a href="#ref22">22</a>,<a href="#ref23">23</a>,<a href="#ref24">24</a>]. Several normalisation approaches have been proposed (for a detailed review, refer to [<a href="#ref22">22</a>]), and variance stabilising transformations (VST) from the DESeq2 Bioconductor package is used here. VST uses a conservative log transformation to set the counts to have constant variance [<a href="#ref23">23</a>,<a href="#ref25">25</a>]. Count data is usually modelled with a Poisson distribution but as it underestimates the variance in RNA-seq data, VST assumes a negative binomial distribution instead [<a href="#ref25">25</a>]. Ribosomal RNA and rows with counts below 10 are removed to avoid skewing due to very large or small counts.</p>
+								<p>As an additional measure, we normalise transcriptomic and proteomic datasets to the control timepoint zero to evaluate rate changes rather than relative expression levels.</p>
+								<h3 id="assumptions">Assumptions</h3>
+								<p>For analysis, we make the following assumptions: first, a constant and sufficient nutrient supply, constant temperature of 36.5&deg;C (thermo-sensitive strain)/32.0&deg;C (analogue-sensitive strain) as well as prevalence of steady-state environmental conditions. Second, average concentrations reflect individual cell states. Third, cells are arrested in G<sub>2</sub> and maintain homeostasis, or a balanced internal cell state. Lastly, the data acquisition and transformation pipeline prior to analysis correctly captures RNA and protein counts with minimal errors and noise.</p>
+								<h3 id="methods">Methods</h3>
+								<p><i>S. pombe</i> has about 7,000 genes of which more than 5,000 are protein coding [<a href="#ref9">9</a>]. In order to extract general patterns across such a vast amount of data, it becomes necessary to cluster them [<a href="#ref26">26</a>,<a href="#ref27">27</a>,<a href="#ref28">28</a>,<a href="#ref29">29</a>]. Clustering is an unsupervised classification algorithm that allows grouping pattern based on similarity [<a href="#ref30">30</a>]. In this analysis, we explore two types of clustering: k-means, a partitioning method and spline clustering a hierarchical and model-based approach. K-means gives a general overview but has limitations, as it requires independent and identically distributed timepoints. Spline clustering on the other hand uses the biological information in the curves to cluster genes based on expression patterns. The workflow is summarised in Figure <a href="#fig1">1</a> and the list of R 3.1.3 and Bioconductor 3.0 packages used for the data analysis [<a href="#ref31">31</a>,<a href="#ref32">32</a>].&nbsp;</p>
+								<div class="boxAroundPics">
+								<p>&nbsp;</p>
+								<img id="fig1" class="centeringPic" src="images/methodsFlowchart.jpg">
+								<p>&nbsp;</p>
+								<p>Figure 1. Flowchart of the methods used in this analysis.</p>
+								</div>
+								<p class="belowBox">We apply k-means clustering via the R package <i>kml</i>, an adapted version of k-means clustering to temporal data, with dynamic time warping as distance measure [<a href="#ref33">33</a>]. This finds the best alignment between two time series that vary in time or speed rather than comparing absolute distances between each two points [<a href="#ref34">34</a>]</p>
+								<p>Spline clustering considers the shape of the time series as continuous curves using non-linear regression splines rather than individual time points because of noise of the data and its high dimensionality: the large quantity of genes considered. It uses Bayesian agglomerative and hierarchical clustering to maximise the marginal likelihood of the clusters [<a href="#ref35">35</a>,<a href="#ref36">36</a>,<a href="#ref37">37</a>,<a href="#ref38">38</a>]. As similarity measure, it uses covariance clustering to reflect the biology and the dynamic process of gene expression in the time series.</p>
+								<p>After the clustering step, we perform <abbr title="Gene Ontology Term Enrichment">GOTE</abbr> to identify their gene functions. <abbr title="Gene Ontology Term Enrichment">GOTE</abbr> uses the Fisher&#39;s exact test to assign biological meaning to the clusters with similar expression patterns by verifying if genes with certain GO terms are overrepresented and consider only GO terms below a Bonferoni-adjusted p-value to account for multiple testing.</p>
+								<p>An alternative to clustering is the co-expression network. Using this method, we show that we can capture complex relationships and interactions between genes but also provide a systems level overview over expression relations. While, with further analysis, dynamics and topology changes could potentially be deducted [<a href="#ref39">39</a>], here we only use the network to cross validate the clustering results as well as for visualisation. We examine two types of networks in this study: gene co-regulation and weighted protein interaction networks [<a href="#ref40">40</a>].</p>
+								<p>These networks are mathematically modelled as graphs, where nodes represent genes; and links between them are created using the co-expression deducted from high similarity between the time series expression pattern of each two genes. We apply two approaches: first, the traditional Spearman&#39;s rank correlation coefficient &rho; [<a href="#ref40">40</a>] </p>
+								<img class="centeringPic" id="spearman" src="images/spearman.png">
+								<p>where <i>d</i> is the difference between ranks and <i>n</i> is the sample size, and second the recently-introduced concept of proportionality [<a href="#ref41">41</a>]</p>
+								<p class="propFormula">&phi;(log <i>x</i>, log <i>y</i>) = var (log(<i>x</i>/<i>y</i>))/var(log <i>x</i>),</p>
+								<p> where <i>x</i> and <i>y</i> are the gene expression time series of two genes. We consider both the similarity of the entire time series and eight-hours windows to analyse the network changes over time. For visualisation, graphs are sent to Cytoscape [<a href="#ref42">42</a>] via a <a href="https://github.com/tmuetze/Bioconductor_RCy3_the_new_RCytoscape">self-written R package</a>.</p>
+
+								<p>Another analysis tool is cross-correlation, a signal similarity measure, which quantifies the time delays or phase shifts between two time series [<a href="#ref43">43</a>]. In its discrete form, it is mathematically modelled as</p>
+								<img id="cc" class="centeringPic" src="images/crossCorrelation.png" alt="Cross-correlation">
+								<p>where <i>f</i> and <i>g</i> are two functions, <i>f<sup>*</sup></sub></i> their complex conjugate, <i>n</i> the lag, and <i>m</i> the real numbers, and illustrated in Movie <a href="#movie2">2</a>.</p>
+
+								<div class="boxAroundPics">
+									<p>&nbsp;</p>
+									<img id="movie2" class="centeringPic" src="images/cross_correlation_animation.gif" alt="Cross-correlation means sliding one image past the other">
+									<p>&nbsp;</p>
+									<p>Movie 2: Cross-correlation entails sliding one time series past the other by taking their products. High overlap is translated into a high cross-correlation score for that timepoint. Its maximum is the delay of one time series vs the other. Image credit UC Berkley. &nbsp;</p>
+								</div>
+
+								<p class="belowBox">The combination of these three methods, clustering, co-expression networks and cross-correlation, provides an overview over global gene expression: the functional groups, their behaviour and their relation to other groups.</p>
+
+								<h3 id="results">Results</h3>
+								<p>Cellular growth follows an S-curve, see Figure <a href="#fig2">2</a>. Initial linear (R<sup>2</sup>=0.8053 (<i>cdc2-33</i>); 0.9402 (<i>cdc2as</i>)) or exponential growth (R<sup>2</sup>=0.7674; 0.9795) slows down after five hours and plateaus after nine hours. This median length increase of 5.12-fold (3.93-fold) could be traced to transcription limitation, consistent with previous observation that transcription levels off at 4-5-fold [<a href="#ref1">1</a>]. Variability in length increases from 2.41 at the experiment beginning to 51.35 due to increased cellular size heterogeneity.</p>
+								<div <div class="boxAroundPics">
+									<img id="fig2" class="lefti featuredImg" src="images/boxplot of engineered cell lengths - no outliers.png">
+									<img class="featuredImg" src="images/boxplot of heat cell lengths - no outliers.png">
+									<p>Figure 2: Cell length increase after cell cycle arrest in A) cdc2as and B) cdc2-33 mutants. After an initial increase in length, growth slows down and plateaus after nine hours.</p>
+								</div>
+
+								<p class="belowBox">Analysis of transcript genes clusters from spline clustering showed that they follow three general trends with cell size: they either increase, decreases or remain unchanged (Table <a href="#tg-4Rpm8">1</a>). Overall gene expression (74% of genes) scales with size which corroborates with literature [<a href="#ref1">1</a>], see Figure <a href="#foldchange">3</a>. GOTE on these clusters reveals that genes involved in transcription, translation and protein production, i.e. cytoplasmic translation, ribosomal genes, rRNA processing and growth, RNA processing, RNA binding, degradation, exosome and chromatin modification, decrease in expression over time (see Carousel <a href="#carousel1">1</a>. Genes that show increased expression were transcription factors, stress related genes, nitrogen removal and late meiotic genes. Genes that follow size and have a constant expression were involved in signal transduction, membrane, transport, and cytoplasmic processes.</p>
+
+								<div class="boxAroundPics">
+									<img id="foldchange" class="featuredImg centeringPic" src="images/foldchange.png">
+									<p>Figure 3. Fold change of gene expression after eleven hours over the control at experiment begin.</p>
+								</div>
+								<p class="belowBox">&nbsp;</p>
+								<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+th.tg-sort-header::-moz-selection { background:transparent; }th.tg-sort-header::selection      { background:transparent; }th.tg-sort-header { cursor:pointer; }table th.tg-sort-header:after {  content:'';  float:right;  margin-top:7px;  border-width:0 4px 4px;  border-style:solid;  border-color:#404040 transparent;  visibility:hidden;  }table th.tg-sort-header:hover:after {  visibility:visible;  }table th.tg-sort-desc:after,table th.tg-sort-asc:after,table th.tg-sort-asc:hover:after {  visibility:visible;  opacity:0.4;  }table th.tg-sort-desc:after {  border-bottom:none;  border-width:4px 4px 0;  }@media screen and (max-width: 767px) {.tg {width: auto !important;}.tg col {width: auto !important;}.tg-wrap {overflow-x: auto;-webkit-overflow-scrolling: touch;margin: auto 0px;}}</style>
+
+<div class="tg-wrap"><table id="tg-4Rpm8" class="tg">
+  <tr>
+    <th class="tg-031e"><b>GO name</b></th>
+    <th class="tg-031e"><b>FDR p-value</b></th>
+    <th class="tg-031e"><b>Background frequency</b></th>
+    <th class="tg-031e"><b>Sample frequency</b></th>
+    <th class="tg-031e"><b>Fold change</b></th>
+  </tr>
+  <tr>
+    <td class="tg-031e">growth module</td>
+    <td class="tg-031e">9.34E-178</td>
+    <td class="tg-031e">415</td>
+    <td class="tg-031e">300</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">cytoplasmic translation</td>
+    <td class="tg-031e">1.11E-71</td>
+    <td class="tg-031e">156</td>
+    <td class="tg-031e">121</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">nucleolus</td>
+    <td class="tg-031e">4.68E-54</td>
+    <td class="tg-031e">318</td>
+    <td class="tg-031e">159</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">cytosolic large ribosomal subunit</td>
+    <td class="tg-031e">8.12E-48</td>
+    <td class="tg-031e">82</td>
+    <td class="tg-031e">71</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">ribosome biogenesis</td>
+    <td class="tg-031e">8.66E-47</td>
+    <td class="tg-031e">92</td>
+    <td class="tg-031e">75</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">translation</td>
+    <td class="tg-031e">3.06E-35</td>
+    <td class="tg-031e">343</td>
+    <td class="tg-031e">141</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">cytosolic small ribosomal subunit</td>
+    <td class="tg-031e">2.49E-34</td>
+    <td class="tg-031e">63</td>
+    <td class="tg-031e">53</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">RNA metabolic process</td>
+    <td class="tg-031e">2.84E-18</td>
+    <td class="tg-031e">693</td>
+    <td class="tg-031e">183</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">RNA binding</td>
+    <td class="tg-031e">4.92E-14</td>
+    <td class="tg-031e">603</td>
+    <td class="tg-031e">155</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">tRNA metabolic process</td>
+    <td class="tg-031e">2.73E-06</td>
+    <td class="tg-031e">142</td>
+    <td class="tg-031e">44</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">G2 phase induced</td>
+    <td class="tg-031e">6.04E-05</td>
+    <td class="tg-031e">148</td>
+    <td class="tg-031e">42</td>
+    <td class="tg-031e">&lt;-2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">nitrogen removal induced</td>
+    <td class="tg-031e">1.47E-16</td>
+    <td class="tg-031e">207</td>
+    <td class="tg-031e">98</td>
+    <td class="tg-031e">&gt;2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">stress module</td>
+    <td class="tg-031e">6.73E-12</td>
+    <td class="tg-031e">473</td>
+    <td class="tg-031e">163</td>
+    <td class="tg-031e">&gt;2</td>
+  </tr>
+  <tr>
+    <td class="tg-031e">late meiotic genes</td>
+    <td class="tg-031e">6.80E-09</td>
+    <td class="tg-031e">125</td>
+    <td class="tg-031e">57</td>
+    <td class="tg-031e">&gt;2</td>
+  </tr>
+</table></div>
+<script type="text/javascript" charset="utf-8">var TgTableSort=window.TgTableSort||function(n,t){"use strict";function r(n,t){for(var e=[],o=n.childNodes,i=0;i<o.length;++i){var u=o[i];if("."==t.substring(0,1)){var a=t.substring(1);f(u,a)&&e.push(u)}else u.nodeName.toLowerCase()==t&&e.push(u);var c=r(u,t);e=e.concat(c)}return e}function e(n,t){var e=[],o=r(n,"tr");return o.forEach(function(n){var o=r(n,"td");t>=0&&t<o.length&&e.push(o[t])}),e}function o(n){return n.textContent||n.innerText||""}function i(n){return n.innerHTML||""}function u(n,t){var r=e(n,t);return r.map(o)}function a(n,t){var r=e(n,t);return r.map(i)}function c(n){var t=n.className||"";return t.match(/\S+/g)||[]}function f(n,t){return-1!=c(n).indexOf(t)}function s(n,t){f(n,t)||(n.className+=" "+t)}function d(n,t){if(f(n,t)){var r=c(n),e=r.indexOf(t);r.splice(e,1),n.className=r.join(" ")}}function v(n){d(n,L),d(n,E)}function l(n,t,e){r(n,"."+E).map(v),r(n,"."+L).map(v),e==T?s(t,E):s(t,L)}function g(n){return function(t,r){var e=n*t.str.localeCompare(r.str);return 0==e&&(e=t.index-r.index),e}}function h(n){return function(t,r){var e=+t.str,o=+r.str;return e==o?t.index-r.index:n*(e-o)}}function m(n,t,r){var e=u(n,t),o=e.map(function(n,t){return{str:n,index:t}}),i=e&&-1==e.map(isNaN).indexOf(!0),a=i?h(r):g(r);return o.sort(a),o.map(function(n){return n.index})}function p(n,t,r,o){for(var i=f(o,E)?N:T,u=m(n,r,i),c=0;t>c;++c){var s=e(n,c),d=a(n,c);s.forEach(function(n,t){n.innerHTML=d[u[t]]})}l(n,o,i)}function x(n,t){var r=t.length;t.forEach(function(t,e){t.addEventListener("click",function(){p(n,r,e,t)}),s(t,"tg-sort-header")})}var T=1,N=-1,E="tg-sort-asc",L="tg-sort-desc";return function(t){var e=n.getElementById(t),o=r(e,"tr"),i=o.length>0?r(o[0],"td"):[];0==i.length&&(i=r(o[0],"th"));for(var u=1;u<o.length;++u){var a=r(o[u],"td");if(a.length!=i.length)return}x(e,i)}}(document);document.addEventListener("DOMContentLoaded",function(n){TgTableSort("tg-4Rpm8")});</script>
+
+<p>Table 1: GOTE of up and down regulated genes after eleven hours</p>
+<p class="belowBox">Spline clustering and subsequent GOTE identifies that the steepest declining cluster are the ribosomal protein transcripts. A closer look revealed linear decrease from 25% to 12% of total transcripts (R<sup>2</sup>=0.9578) corresponding to a negative 2.85-fold change (Figure <a href="#fig4">4</a>). Mass spectrometry identified ribosomal proteins also follow this linear decrease (R<sup>2</sup>=0.9503) from 10% to 7% of the discovered proteins after four hours of stable expression. Cross-correlation analysis reveals that protein expression lags gene expression by about 1-2 hours.
+A large, highly connected giant component, a dense web of connections, in the co-expression subnetworks of ribosomal protein genes at correlations above 0.9 and proportionality below 0.3 confirms a tight co-regulation of ribosomal genes with no imbalance between 40S and 60S components (Figure <a href="#fig6">5A</a>). The whole cell level gene co-expression network and the protein interaction network show two distinct modules, one for ribosomal genes and translation and one for metabolic processes (Figure <a href="#fig6">5B</a>). Ribosomal protein genes, however, rather than forming a uniform tiny cluster within the module are spread out and intermixed with many other genes, mostly coding genes.
+
+<div class="boxAroundPics">
+<img id="fig4" class="featuredImg" src="images/RibTranscriptExpression.png">
+<p>Figure 4. Ribosomal protein transcript expression decreases linearly.</p>
+</div>
+<p class="belowBox">&nbsp;</p>
+<div class="boxAroundPics">
+<img id="fig5"  class="lefti centeringPic featuredImg" src="images/subnetwork.png">
+<img id="fig6" class="featuredImg centeringPic" src="images/proteinNetwork.png">
+
+<p>Figure 5: A) Dense subnetwork of 140 ribosomal proteins. B) Protein interaction network coloured by module assignment.</p>
+</div>
+
+
+<p class="belowBox">Since a ribosomal protein expression decrease could be the response of previous factors, we trace the production of ribosomal proteins to potentially identify a cascade of responses [<a href="#ref29">29</a>]. RNA polymerase transcripts equally decrease linearly by 1.55-fold and so does subsequent cytoplasmic transport. In addition, RNA polymerase and ribosomal protein transcripts are highly cross-correlated and thus their expression is in sync. This decrease might have an effect on ribosomal proteins.</p>
+
+
+
+
+								<h3 id="discussion">Discussion</h3>
+								<p>We provided an overview of expression patterns during growth in fission yeast.  Results show that communication and transport pathways, as well as diffusion, do not seem to be limiting factors for cellular growth. Ribosomal protein transcripts do not scale with size, and available transcripts are initially translated more to scale protein production with size. However, their insufficient increase could have an impact on cellular homeostasis and hence contribute to the slowing down in growth after six hours, as production becomes limited to new proteins to maintain growth.</p>
+								<p>To account for the influence of heat as a confounding factor, conclusions drawn from the thermo-sensitive strains have to be cross-referenced with wild-type cells exposed to heat, which may increase expression of stress genes, as well as increase protein degradation [<a href="#ref21">21</a>].</p>
+								<p>Estimation of absolute counts, especially in mass spectrometry data, could complement and extend this analysis. Additional biological replicates would also give more accurate and generalisable results and improve variance assessment. Single cell data can further highlight the impact of differing phenotypes and initial size on growth kinetics and cellular heterogeneity. Repeats with diploid or polyploid cells would enable the analysis of effect of gene copy number on cellular growth control mechanisms.</p>
+								<p>Higher dimensionality, achieved by adding variables, such as RNA half-lives, and essential vs non-essential genes, could also be included in the analysis to potentially uncover further associations between transcriptional control and cell size. Dynamic Bayesian networks and models of the regulatory system via ordinary differential equations can further enable inference of causality by uncovering regulators that influence expression of targets in successive timepoints [<a href="#ref27">27</a>,<a href="#ref29">29</a>].</p>
+								<p>Finally, conclusions drawn from this analysis in elucidating the basic biological growth kinetics could shed light on cellular growth modulation mechanisms in other eukaryotes and find relevance in areas like cancer research.</p>
+
+								<div class="boxAroundPics" id="carousel1">
+
+								<div id="myCarousel" class="carousel slide">
+									  <!-- Indicators -->
+									  <ol class="carousel-indicators">
+									    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+									    <li data-target="#myCarousel" data-slide-to="1"></li>
+									    <li data-target="#myCarousel" data-slide-to="2"></li>
+									    <li data-target="#myCarousel" data-slide-to="3"></li>
+									  </ol>
+
+									  <!-- Wrapper for slides -->
+									  <div class="carousel-inner" role="listbox">
+									    <div class="item active">
+									    <p class="propFormula">Enriched GO term: Nucleolus (p-value: 4.01E-09)</p>
+									      <img src="images/Carousell/28.png" class="widthAdj centeringPic" alt="Spline clustering">
+									    </div>
+
+									    <div class="item">
+									      <p class="propFormula">Enriched GO term: Growth module decreases (p-value: 6.33E-41)</p>
+									      <img src="images/Carousell/30.png" class="widthAdj centeringPic" alt="Spline clustering">
+									    </div>
+
+									    <div class="item">
+									      <p class="propFormula">Enriched GO term: Cytoplasmic translation decreases (p-value: 1.02E-29)</p>
+									      <img src="images/Carousell/31.png" class="widthAdj centeringPic" alt="Spline clustering">
+									    </div>
+
+									    <div class="item">
+									      <p class="propFormula">Enriched GO term: Periodic genes decrease as expected - positive control (p-value: 7.24E-07)</p>
+									      <img src="images/Carousell/40.png" class="widthAdj centeringPic" alt="Spline clustering">
+									    </div>
+
+									    <div class="item">
+									      <p class="propFormula">Enriched GO term: "G1 phase induced" decreases as expected - positive control (p-value: 9.80E-05)</p>
+									      <img src="images/Carousell/41.png" class="widthAdj centeringPic" alt="Spline clustering">
+									    </div>
+
+									    <div class="item">
+									      <p class="propFormula">Enriched GO term: Stress module  (p-value: 0.02428191)</p>
+									      <img src="images/Carousell/101.png" class="widthAdj centeringPic" alt="Spline clustering">
+									    </div>
+
+									  <!-- Left and right controls -->
+									  <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+									    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+									    <span class="sr-only">Previous</span>
+									  </a>
+									  <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+									    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+									    <span class="sr-only">Next</span>
+									  </a>
+									</div>
+
+									<p>Carousel 1: Selected output clusters from spline clustering.</p>
+								</div>
+								</div>
+
+<!-- done-->
+
+
+								<h3 id="conclusion">Conclusion</h3>
+								<p>We present here a pipeline for analyzing gene expression kinetics during cellular growth and show evidence that ribosomal proteins might be a potential growth-limiting factor which further datasets can validate.</p>
+
+
+								<h4 id="acknowl" class="belowBox">Acknowledgement</h3>
+								<p><a href="http://csc.mrc.ac.uk/research-group/quantitative-gene-expression/">Sam</a>, <a href="http://wwwf.imperial.ac.uk/~vshahrez/">Vahid</a> and Amalia for the data and support during development of the analysis pipeline, the QGE Group at the MRC-CSC for discussions and Suhail for technical support.</p>
+
+
+
+								<h3 id="refs">References</h3>
+								<p><span id="ref1">[1]</span>&nbsp;&nbsp;J. Zhurinsky, K. Leonhard, S. Watt, S. Marguerat, J. B&auml;hler, and P. Nurse, <a href="http://www.ncbi.nlm.nih.gov/pubmed/20970341">"A coordinated global control over cellular transcription,"</a> <i>Curr. Biol.</i>, vol. 20, no. 22, pp. 2010-2015, 2010.
+								<p><span id="ref2">[2]</span>&nbsp;&nbsp;S. Marguerat, A. Schmidt, S. Codlin, W. Chen, R. Aebersold, and J. B&auml;hler, <a href="http://www.ncbi.nlm.nih.gov/pubmed/23101633">"Quantitative analysis of fission yeast transcriptomes and proteomes in proliferating and quiescent cells,"</a> <i>Cell</i>, vol. 151, no. 3, pp. 671-683, 2012.</p>
+								<p><span id="ref3">[3]</span>&nbsp;&nbsp;S. Klumpp and T. Hwa, <a href="http://www.ncbi.nlm.nih.gov/pubmed/24495512">"Bacterial growth: Global effects on gene expression, growth feedback and proteome partition,"</a> <i>Curr. Opin. Biotechnol.</i>, vol. 28, pp. 96-102, 2014.</p>
+								<p><span id="ref4">[4]</span>&nbsp;&nbsp;H. Dungrawala, A. Manukyan, and B. L. Schneider, <a href="http://www.sciencedirect.com/science/article/pii/S0960982210012212">"Gene regulation: Global transcription rates scale with size,"</a> <i>Curr. Biol.</i>, vol. 20, no. 22, pp. R979-R981, 2010.</p>
+								<p><span id="ref5">[5]</span>&nbsp;&nbsp;S. Klumpp, M. Scott, S. Pedersen, and T. Hwa, <a href="http://www.pnas.org/content/110/42/16754">"Molecular crowding limits translation and cell growth.,"</a> <i>Proc. Natl. Acad. Sci. U. S. A.</i>, vol. 110, no. 42, pp. 16754-9, 2013.</p>
+								<p><span id="ref6">[6]</span>&nbsp;&nbsp;M. Scott and T. Hwa, <a href="http://www.ncbi.nlm.nih.gov/pubmed/21592775">"Bacterial growth laws and their applications,"</a> <i>Curr. Opin. Biotechnol.</i>, vol. 22, no. 4, pp. 559-565, 2011.</p>
+								<p><span id="ref7">[7]</span>&nbsp;&nbsp;A. Y. Wei&szlig;e, D. a. Oyarz&uacute;n, V. Danos, and P. S. Swain, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25695966">"Mechanistic links between cellular trade-offs, gene expression, and growth,"</a> <i>Proc. Natl. Acad. Sci.</i>, p. 201416533, 2015.</p>
+								<p><span id="ref8">[8]</span>&nbsp;&nbsp;M. a. Harris, A. Lock, J. B&auml;hler, S. G. Oliver, and V. Wood, <a href="http://www.ncbi.nlm.nih.gov/pubmed/23658422">"FYPO: The fission yeast phenotype ontology,"</a> <i>Bioinformatics</i>, vol. 29, no. 13, pp. 1671-1678, 2013.</p>
+								<p><span id="ref9">[9]</span>&nbsp;&nbsp;V. Wood, M. a. Harris, M. D. McDowall, K. Rutherford, B. W. Vaughan, D. M. Staines, M. Aslett, A. Lock, J. B&auml;hler, P. J. Kersey, and S. G. Oliver, <a href="http://www.ncbi.nlm.nih.gov/pubmed/22039153">"PomBase: A comprehensive online resource for fission yeast,"</a> <i>Nucleic Acids Res.</i>, vol. 40, no. D1, pp. 695-699, 2012.</p>
+								<p><span id="ref10">[10]</span>&nbsp;&nbsp;P. Nurse, P. Thuriaux, and K. Nasmyth, <a href="http://link.springer.com/article/10.1007%2FBF00268085#page-1">"Genetic control of the cell division cycle in the fission yeast Schizosaccharomyces pombe.,"</a> <i>Mol. Gen. Genet.</i>, vol. 146, no. 2, pp. 167-178, 1976.</p>
+								<p><span id="ref11">[11]</span>&nbsp;&nbsp;Y. Aoi, S. a Kawashima, V. Simanis, M. Yamamoto, and M. Sato, <a href="http://www.ncbi.nlm.nih.gov/pubmed/24990387">"Optimization of the analogue-sensitive Cdc2/Cdk1 mutant by in vivo selection eliminates physiological limitations to its use in cell cycle analysis.,"</a> <i>Open Biol.</i>, vol. 4, no. 7, 2014.</p>
+								<p><span id="ref12">[12]</span>&nbsp;&nbsp;S. Dischinger, A. Krapp, L. Xie, J. R. Paulson, and V. Simanis, <a href="http://www.ncbi.nlm.nih.gov/pubmed/18303049">"Chemical genetic analysis of the regulatory role of Cdc2p in the S. pombe septation initiation network.,"</a> <i>J. Cell Sci.</i>, vol. 121, no. Pt 6, pp. 843-853, 2008.</p>
+								<p><span id="ref13">[13]</span>&nbsp;&nbsp;D. Coudreuse and P. Nurse, <a href="http://www.ncbi.nlm.nih.gov/pubmed/21179163">"Driving the cell cycle with a minimal CDK control network.,"</a> <i>Nature</i>, vol. 468, no. 7327, pp. 1074-1079, 2010.</p>
+								<p><span id="ref14">[14]</span>&nbsp;&nbsp;S. Marguerat and J. B&auml;hler, <a href="http://www.ncbi.nlm.nih.gov/pubmed/22863032">"Coordinating genome expression with cell size,"</a> <i>Trends Genet.</i>, vol. 28, no. 11, pp. 560-565, 2012.</p>
+								<p><span id="ref15">[15]</span>&nbsp;&nbsp;Z. Wang, M. Gerstein, and M. Snyder, <a href="http://www.ncbi.nlm.nih.gov/pubmed/19015660">"RNA-Seq: a revolutionary tool for transcriptomics.,"</a> <i>Nat. Rev. Genet.</i>, vol. 10, no. 1, pp. 57-63, 2009.</p>
+								<p><span id="ref16">[16]</span>&nbsp;&nbsp;M. Garber, M. G. Grabherr, M. Guttman, and C. Trapnell, <a href="http://www.ncbi.nlm.nih.gov/pubmed/21623353">"Computational methods for transcriptome annotation and quantification using RNA-seq.,"</a> <i>Nat. Methods</i>, vol. 8, no. 6, pp. 469-477, 2011.</p>
+								<p><span id="ref17">[17]</span>&nbsp;&nbsp;S. Marguerat and J. B&auml;hler, <a href="http://www.ncbi.nlm.nih.gov/pubmed/19859660">"RNA-seq: From technology to biology,"</a> <i>Cell. Mol. Life Sci.</i>, vol. 67, no. 4, pp. 569-579, 2010.</p>
+								<p><span id="ref18">[18]</span>&nbsp;&nbsp;G. S. C. Slater and E. Birney, <a href="http://www.ncbi.nlm.nih.gov/pubmed/15713233">"Automated generation of heuristics for biological sequence comparison.,"</a> <i>BMC Bioinformatics</i>, vol. 6, p. 31, 2005.</p>
+								<p><span id="ref19">[19]</span>&nbsp;&nbsp;M. W. Schmidt, A. Houseman, A. R. Ivanov, and D. Wolf, <a href="http://www.ncbi.nlm.nih.gov/pubmed/17299416">"Comparative proteomic and transcriptomic profiling of the fission yeast Schizosaccharomyces pombe.,"</a> <i>Mol. Syst. Biol.</i>, vol. 3, no. 79, p. 79, 2007.</p>
+								<p><span id="ref20">[20]</span>&nbsp;&nbsp;J. Gunaratne, a. Schmidt, a. Quandt, S. P. Neo, O. S. Sarac, T. Gracia, S. Loguercio, E. Ahrne, R. L. H. Xia, K. H. Tan, C. Lossner, J. Bahler, a. Beyer, W. Blackstock, and R. Aebersold, <a href="http://www.ncbi.nlm.nih.gov/pubmed/23462206">"Extensive Mass Spectrometry-based Analysis of the Fission Yeast Proteome: THE SCHIZOSACCHAROMYCES POMBE PeptideAtlas,"</a> <i>Mol. Cell. Proteomics</i>, vol. 12, no. 6, pp. 1741-1751, 2013.</p>
+								<p><span id="ref21">[21]</span>&nbsp;&nbsp;S. Baumg&auml;rtner and I. M. Toli&#263;-N&oslash;rrelykke, <a href="http://www.ncbi.nlm.nih.gov/pubmed/19450504">"Growth pattern of single fission yeast cells is bilinear and depends on temperature and DNA synthesis,"</a> <i>Biophys. J.</i>, vol. 96, no. 10, pp. 4336-4347, 2009.
+								<p><span id="ref22">[22]</span>&nbsp;&nbsp;C. Soneson and M. Delorenzi, <a href="http://www.biomedcentral.com/1471-2105/14/91">"A comparison of methods for differential expression analysis of RNA-seq data,"</a> <i>BMC Bioinformatics</i>, vol. 14, no. 1, p. 1, 2013.</p>
+								<p><span id="ref23">[23]</span>&nbsp;&nbsp;M. I. Love, W. Huber, and S. Anders, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25516281">"Moderated estimation of fold change and dispersion for RNA-Seq data with DESeq2,"</a> <i>bioRxiv</i>, pp. 1-21, 2014.</p>
+								<p><span id="ref24">[24]</span>&nbsp;&nbsp;J. H. Bullard, E. Purdom, K. D. Hansen, and S. Dudoit, <a href="http://www.ncbi.nlm.nih.gov/pubmed/20167110">"Evaluation of statistical methods for normalization and differential expression in mRNA-Seq experiments.,"</a> <i>BMC Bioinformatics</i>, vol. 11, p. 94, 2010.</p>
+								<p><span id="ref25">[25]</span>&nbsp;&nbsp;S. Anders and W. Huber, <a href="http://www.genomebiology.com/2010/11/10/r106">"Differential expression analysis for sequence count data.,"</a> <i>Genome Biol.</i>, vol. 11, no. 10, p. R106, 2010.</p>
+								<p><span id="ref26">[26]</span>&nbsp;&nbsp;S. Oh, S. Song, N. Dasgupta, and G. Grabowski, <a href="http://www.ncbi.nlm.nih.gov/pubmed/24600473">"The analytical landscape of static and temporal dynamics in transcriptome data,"</a> <i>Front. Genet.</i>, vol. 5, no. FEB, pp. 1-12, 2014.</p>
+								<p><span id="ref27">[27]</span>&nbsp;&nbsp;Z. Bar-Joseph, <a href="http://www.ncbi.nlm.nih.gov/pubmed/15130923">"Analyzing time series gene expression data,"</a> <i>Bioinformatics</i>, vol. 20, no. 16, pp. 2493-2503, 2004.</p>
+								<p><span id="ref28">[28]</span>&nbsp;&nbsp;P. D'haeseleer, <a href="http://www.nature.com/nbt/journal/v23/n12/full/nbt1205-1499.html">"How does gene expression clustering work?,"</a> <i>Nat. Biotechnol.</i>, vol. 23, no. 12, pp. 1499-1501, 2005.</p>
+								<p><span id="ref29">[29]</span>&nbsp;&nbsp;Z. Bar-Joseph, A. Gitter, and I. Simon, <a href="http://www.ncbi.nlm.nih.gov/pubmed/22805708">"Studying and modelling dynamic biological processes using time-series gene expression data,"</a> <i>Nat. Rev. Genet.</i>, vol. 13, no. 8, pp. 552-564, 2012.</p>
+								<p><span id="ref30">[30]</span>&nbsp;&nbsp;A. K. Jain, M. N. Murty, and P. J. Flynn, <a href="http://dl.acm.org/citation.cfm?id=331504">"Data clustering: a review,"</a> <i>ACM Computing Surveys</i>, vol. 31, no. 3. pp. 264-323, 1999.</p>
+								<p><span id="ref31">[31]</span>&nbsp;&nbsp;R Core Team, <a href="http://cran.r-project.org/">"R: A Language and Environment for Statistical Computing."</a> Vienna, Austria, 2015.</p>
+								<p><span id="ref32">[32]</span>&nbsp;&nbsp;R. C. Gentleman, V. J. Carey, D. M. Bates, B. Bolstad, M. Dettling, S. Dudoit, B. Ellis, L. Gautier, Y. Ge, J. Gentry, K. Hornik, T. Hothorn, W. Huber, S. Iacus, R. Irizarry, F. Leisch, C. Li, M. Maechler, A. J. Rossini, G. Sawitzki, C. Smith, G. Smyth, L. Tierney, J. Y. H. Yang, and J. Zhang, <a href="http://www.ncbi.nlm.nih.gov/pubmed/15461798">"Bioconductor: open software development for computational biology and bioinformatics.,"</a> <i>Genome Biol.</i>, vol. 5, no. 10, p. R80, 2004.</p>
+								<p><span id="ref33">[33]</span>&nbsp;&nbsp;C. Genolini and B. Falissard, <a href="http://www.ncbi.nlm.nih.gov/pubmed/21708413">"Kml: A package for clustering longitudinal data,"</a> p. 2008, 2008.</p>
+								<p><span id="ref34">[34]</span>&nbsp;&nbsp;T. Oates, L. Firoiu, and P. R. Cohen, <a href="http://cs.fit.edu/~pkc/ml/related/oates-ijcaisl99.pdf">"Clustering Time Series with Hidden Markov Models and Dynamic Time Warping,"</a> <i>Int. Jt. Conf. Artif. Intell. - Work. Seq. Learn.</i>, 1999.</p>
+								<p><span id="ref35">[35]</span>&nbsp;&nbsp;N. Heard, C. Holmes, and D. Stephens, <a href="http://www.tandfonline.com/doi/abs/10.1198/016214505000000187">"A Quantitative Study of Gene Regulation Involved in the Immune Response of Anopheline Mosquitoes,"</a> <i>J. Am. Stat. Assoc.</i>, vol. 101, no. 473, pp. 18-29, 2006.</p>
+								<p><span id="ref36">[36]</span>&nbsp;&nbsp;W. F. Zhang, C. C. Liu, and H. Yan, <a href="http://www.sciencedirect.com/science/article/pii/S003132031000350X">"Clustering of temporal gene expression data by regularized spline regression and an energy based similarity measure,"</a> <i>Pattern Recognit.</i>, vol. 43, no. 12, pp. 3969-3976, 2010.</p>
+								<p><span id="ref37">[37]</span>&nbsp;&nbsp;S. D&eacute;jean, P. G. P. Martin, a. Baccini, and P. Besse, <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3171348/">"Clustering time-series gene expression data using smoothing spline derivatives,"</a> <i>Eurasip J. Bioinforma. Syst. Biol.</i>, vol. 2007, 2007.</p>
+								<p><span id="ref38">[38]</span>&nbsp;&nbsp;E. Holian, N. Coffey, and J. Hinde, <a href="http://www.maths.nuim.ie/documents/uploads/staff/Coll1011_EHolian.pdf">"Clustering longitudinal data; penalized spline smoothing within a mixture of mixed models framework.,"</a> no. 2003, pp. 1-2, 2005.</p>
+								<p><span id="ref39">[39]</span>&nbsp;&nbsp;A.-L. Barab&aacute;si and Z. N. Oltvai, "Network biology: understanding the cell's functional organization.," <i>Nat. Rev. Genet.</i>, vol. 5, no. 2, pp. 101-113, 2004.</p>
+								<p><span id="ref40">[40]</span>&nbsp;&nbsp;S. Lehtinen, F. X. Marsellach, S. Codlin, A. Schmidt, M. Cl&eacute;ment-Ziza, A. Beyer, J. B&auml;hler, C. Orengo, and V. Pancaldi, <a href="http://www.ncbi.nlm.nih.gov/pubmed/23471351">"Stress induces remodelling of yeast interaction and co-expression networks.,"</a> <i>Mol. Biosyst.</i>, vol. 9, no. 7, pp. 1697-707, 2013.</p>
+								<p><span id="ref41">[41]</span>&nbsp;&nbsp;D. Lovell, V. Pawlowsky-Glahn, J. J. Egozcue, S. Marguerat, and J. B&auml;hler, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25775355">"Proportionality: A Valid Alternative to Correlation for Relative Data,"</a> <i>PLOS Comput. Biol.</i>, vol. 11, no. 3, p. e1004075, 2015.</p>
+								<p><span id="ref42">[42]</span>&nbsp;&nbsp;P. Shannon, A. Markiel, O. Ozier, N. S. Baliga, J. T. Wang, D. Ramage, N. Amin, B. Schwikowski, and T. Ideker, <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC403769/">"Cytoscape: A software Environment for integrated models of biomolecular interaction networks,"</a> <i>Genome Res.</i>, vol. 13, no. 11, pp. 2498-2504, 2003.</p>
+								<p><span id="ref43">[43]</span>&nbsp;&nbsp;D. J. Kiviet, P. Nghe, N. Walker, S. Boulineau, V. Sunderlikova, and S. J. Tans, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25186725">"Stochasticity of metabolism and growth at the single-cell level,"</a> <i>Nature</i>, vol. 514, no. 7522, pp. 376-379, 2014.</p>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--footer -->
+		<div class="navbar navbar-default navbar-fixed-bottom">
+			<div class="container">
+				<p class="navbar-text">&copy; Tanja Muetze - Imperial College London, June 2015</p>
+				<p class="navbar-text pull-right">Word count: 2485</p>
+			</div>
+		</div>
+
+		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="js/bootstrap.js"></script>
+
+		<!-- fix side bar -->
+		<script type="text/javascript">
+			$(function(){
+				$('#sidebar').affix();
+			})
+		</script>
+
+		<!-- to make gif start and stop -->
+		<script>
+			$(function(){
+				$('.crossCorPic').each(function(e){
+					var src = $(e).attr('src');
+					$(e).hover(function(){
+						$(this).attr('src', src.replace('images/cross_correlation_pic.gif', 'images/cross_correlation_animation.gif'));
+					}, function(){
+						$(this).attr('src', src);
+					});
+				});
+			});
+		</script>
+	</body>
+</html>

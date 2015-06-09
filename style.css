@@ -1,0 +1,63 @@
+body {
+	margin-bottom: 80px;
+    padding-top: 70px;
+    text-align:justify;
+    font-style: Verdana;
+}
+*[id]:before {
+  display: block;
+  content: " ";
+  margin-top: -75px;
+  height: 75px;
+  visibility: hidden;
+}
+
+.panel-body {
+	padding-top:  0;
+	vertical-align: top;
+}
+
+.featuredImg {
+	width: 50%;
+	margin-bottom: 15px;
+}
+.centeringPic{
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.widthAdj{
+	width: 50%;
+}
+
+p {
+	font-size: 17;
+}
+.lefti{
+	float: left;
+}
+
+#movie1{
+	padding-top: 10px;
+}
+#fig1 {
+	width: 80%;
+}
+.boxAroundPics{
+	box-shadow: 10px 10px 5px #888888;
+	border:1px solid black;
+	padding-bottom: 10px;
+}
+.belowBox{
+	padding-top: 20px;
+}
+h3{
+	padding-top: 10px;
+}
+#myCarousel{
+	padding-top: 30px;
+}
+
+.propFormula {
+	text-align: center;
+}
